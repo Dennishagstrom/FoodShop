@@ -19,17 +19,26 @@ const products = [
 
 $("document").ready(function () {
 
+    localStorage.setItem("fridgeHistory", JSON.stringify(fridgeHistory));
+    localStorage.setItem("fridgeStorage", JSON.stringify(fridgeStorage));
+
     for (let i = 0; i < products.length; i++) {
-        fridgeStorage.set(products[i].name, 0);
+        if(!fridgeStorage.get(products[i].name)) {
+            fridgeStorage.set(products[i].name, 0);
+        }
+
         let name = products[i].name;
-        let price = products[i].price;
-        let amount = parseInt(fridgeStorage.get(name)) + parseInt(localStorage.getItem(name));
+        let amount = fridgeStorage.get(name);
+
+        // let localAmount = localStorage.getItem(name);
+        // let storageAmount = fridgeStorage.get(name);
+        // let totalAmount = storageAmount + parseInt(localAmount);
+
         updateStorage(name, amount);
         $("#products").append(`<option value="${name}">${name}</option>`);
         $("#tableStorage").append("<tr><td>" + name + "</td><td>" + amount + "</td>");
-
         }
-
+    console.log(fridgeStorage);
         let content = localStorage.getItem("fridgeHistory");
         content = JSON.parse(content);
         fridgeHistory.push(...content);
@@ -101,9 +110,6 @@ function updateStorage (item, totalAmount) {
 }
 
 function addToStorage (employee, item, amount) {
-    if (localStorage.getItem(item) === null) {
-        localStorage.setItem(item, "0");
-    }
     let time = dateFinder();
     fridgeHistory.push({
         id: fridgeHistory.length + 1,
